@@ -12,9 +12,9 @@ import android.view.ViewOutlineProvider;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.captureinterface.R;
 import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.example.myapplicationtest.R;
 
 /**
  * @author : HHotHeart

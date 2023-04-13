@@ -7,10 +7,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 
+import com.android.captureinterface.R;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.example.myapplicationtest.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -12,8 +12,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+import com.android.captureinterface.R;
 import com.blankj.utilcode.util.ActivityUtils;
-import com.example.myapplicationtest.R;
 
 public class BaseDialog extends Dialog {
     private Context context;

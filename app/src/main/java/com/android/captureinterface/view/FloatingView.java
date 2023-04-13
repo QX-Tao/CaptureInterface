@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.myapplicationtest.R;
+import com.android.captureinterface.R;
 import com.android.captureinterface.concurrent.ChannelFactory;
 import com.android.captureinterface.socket.ClientSocket;
 import com.android.captureinterface.utils.currentClickUtil;

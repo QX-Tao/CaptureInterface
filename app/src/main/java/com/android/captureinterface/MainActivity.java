@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initViews() {
         tv_text = findViewById(R.id.textView);
-//        bt_button = findViewById(R.id.button);
-
         // 申请悬浮窗及截图权限
         DialogInterface.OnClickListener negativeLister = new DialogInterface.OnClickListener() {
             @Override

@@ -178,14 +178,7 @@ public class ScreenShotService extends Service {
 
         Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
-        //截取图片
-//        Bitmap cutBitmap = Bitmap.createBitmap(bitmap,0,0,width/2,height/2);
-
-        //压缩图片
-//        Matrix matrix = new Matrix();
-//        matrix.setScale(0.5F, 0.5F);
-//        System.out.println(bitmap.isMutable());
-//        bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+        bitmap = Bitmap.createBitmap(bitmap,0,0,width,height);
 
         image.close();
         return bitmap;

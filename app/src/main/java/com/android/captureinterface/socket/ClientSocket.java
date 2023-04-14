@@ -42,7 +42,7 @@ public class ClientSocket {
             in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
             String serverMsg = in.readLine();
 
-            String fileName = "SDK" + "_" + "TreeView.json";
+            String fileName = "SDK" + "_" + "TreeView(" + currentClickUtil.getInterfaceNum() +").json";
             String strFilePath = currentClickUtil.getClickFilePath() + File.separator + fileName;
             File saveFile = new File(strFilePath);
             RandomAccessFile raf = new RandomAccessFile(saveFile, "rwd");

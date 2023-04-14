@@ -4,6 +4,8 @@ import static com.android.captureinterface.constant.ScreenShotConstant.DUMP_VIEW
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -26,10 +28,10 @@ import java.util.concurrent.Executors;
 public class MyAccessibilityService extends AccessibilityService {
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(new DumpViewTreeTask(event));
-    }
+public void onAccessibilityEvent(AccessibilityEvent event) {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.execute(new DumpViewTreeTask(event));
+}
 
     class DumpViewTreeTask implements Runnable {
 
@@ -123,7 +125,7 @@ public class MyAccessibilityService extends AccessibilityService {
      */
     public void JsonToFIle(JSONObject jsonObject) throws IOException {
         String json = jsonObject.toString();
-        String fileName = "无障碍" + "_" + "TreeView.json";
+        String fileName = "无障碍" + "_" + "TreeView(" + currentClickUtil.getInterfaceNum() + ").json";
         String strFilePath = currentClickUtil.getClickFilePath() + File.separator + fileName;
         File saveFile = new File(strFilePath);
         RandomAccessFile raf = new RandomAccessFile(saveFile, "rwd");

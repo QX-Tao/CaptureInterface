@@ -41,7 +41,7 @@ public class SaveImageUtils {
         } else {
             suffix = format.name();
         }
-        String fileName = imageName + "." + suffix.toLowerCase();
+        String fileName = imageName + "(" + currentClickUtil.getInterfaceNum() + ")." + suffix.toLowerCase();
 
         if (!isGranted(context)) {
             Log.e("ImageUtils", "save to album need storage permission");

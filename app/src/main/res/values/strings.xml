@@ -24,6 +24,8 @@
     <string name="dialog_permission_refuse">拒绝</string>
     <string name="dialog_permission_title">申请权限</string>
     <string name="service_name">悬浮按钮</string>
-    <string name="floating_button_desc">悬浮按钮功能</string>
+    <string name="floating_button_iv_first">开始收集</string>
+    <string name="floating_button_iv_second">继续收集</string>
+
 
 </resources>

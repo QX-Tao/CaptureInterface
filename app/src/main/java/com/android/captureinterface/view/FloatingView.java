@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.android.captureinterface.R;
 import com.android.captureinterface.concurrent.ChannelFactory;
@@ -55,6 +56,9 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
 
     private MediaProjectionManager mediaProjectionManager;
 
+    private ImageView iv_first;
+    private ImageView iv_second;
+
 
     public FloatingView(Context context) {
         this.context = context;
@@ -68,6 +72,8 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
     public void startFloatingView() {
         // 1. 创建用于展示悬浮按钮的 view
         floatingView = LayoutInflater.from(context).inflate(R.layout.layout_floating_widget, null);
+        iv_first = floatingView.findViewById(R.id.iv_first);
+        iv_second = floatingView.findViewById(R.id.iv_second);
 
         // 2. 设置view的位置和大小
         layoutParams = new WindowManager.LayoutParams(
@@ -86,6 +92,8 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
 
         // 4. 添加点击监听器，实现点击事件
         floatingView.setOnClickListener(this);
+        iv_first.setOnClickListener(this);
+        iv_second.setOnClickListener(this);
 
         // 5. 实例化MediaProjectionManager,开启截屏意图
         mediaProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -98,6 +106,7 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
         // 创建文件夹
         File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
         newDirectory(filePath.toString(), context.getResources().getString(R.string.app_name));
+
     }
 
     public void stopFloatingView() {
@@ -132,59 +141,73 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
     @Override
     public void onClick(View view) {
 
-        File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
-        String clickFilePath = filePath + File.separator + context.getResources().getString(R.string.app_name);
-        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-        String dateStr = dateformat.format(System.currentTimeMillis());
-        newDirectory(clickFilePath, dateStr);
-        currentClickUtil.setClickFilePath(clickFilePath + "/" + dateStr);
 
 
-        CountDownLatch countDownLatch = new CountDownLatch(3);
-        // 隐藏按钮
-        floatingView.setVisibility(View.INVISIBLE);
-        Executor executor = Executors.newFixedThreadPool(4); // 使用单独的线程池，以避免阻塞主UI线程
-        executor.execute(() -> {
-            boolean end = ChannelFactory.getEndScreenShot().receive();
-            if (end) {
-                Log.d(SCREEN_SHOT_TAG, "receive end screenshot");
-                countDownLatch.countDown();
-            }
-        });
-        executor.execute(() -> {
-            boolean end = ChannelFactory.getEndDumpViewTree().receive();
-            if (end) {
-                Log.d(DUMP_VIEW_TREE_TAG, "receive end dumpViewTree");
-                countDownLatch.countDown();
-            }
-        });
-        executor.execute(() -> {
-            try {
-                countDownLatch.await();
-                floatingView.post(() -> floatingView.setVisibility(View.VISIBLE));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+
+        switch (view.getId()){
+            case R.id.iv_first:
+                currentClickUtil.setInterfaceNum(1);
+                File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+                String clickFilePath = filePath + File.separator + context.getResources().getString(R.string.app_name);
+                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+                String dateStr = dateformat.format(System.currentTimeMillis());
+                newDirectory(clickFilePath, dateStr);
+                currentClickUtil.setClickFilePath(clickFilePath + "/" + dateStr);
+                break;
+            case R.id.iv_second:
+                int tgNum = currentClickUtil.getInterfaceNum() + 1;
+                currentClickUtil.setInterfaceNum(tgNum);
+                break;
+        }
+
+        if(currentClickUtil.getClickFilePath() != null){
+            CountDownLatch countDownLatch = new CountDownLatch(3);
+            // 隐藏按钮
+            floatingView.setVisibility(View.INVISIBLE);
+            Executor executor = Executors.newFixedThreadPool(4); // 使用单独的线程池，以避免阻塞主UI线程
+            executor.execute(() -> {
+                boolean end = ChannelFactory.getEndScreenShot().receive();
+                if (end) {
+                    Log.d(SCREEN_SHOT_TAG, "receive end screenshot");
+                    countDownLatch.countDown();
+                }
+            });
+            executor.execute(() -> {
+                boolean end = ChannelFactory.getEndDumpViewTree().receive();
+                if (end) {
+                    Log.d(DUMP_VIEW_TREE_TAG, "receive end dumpViewTree");
+                    countDownLatch.countDown();
+                }
+            });
+            executor.execute(() -> {
+                try {
+                    countDownLatch.await();
+                    floatingView.post(() -> floatingView.setVisibility(View.VISIBLE));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
 
 
-        Log.d(SCREEN_SHOT_TAG, "send start screenshot");
-        // 通知开启截屏
-        ChannelFactory.getStartScreenShot().send(true);
-        // 通知无障碍收集控件树
-        Log.d(DUMP_VIEW_TREE_TAG, "send start dumpViewTree");
-        ChannelFactory.getStartDumpViewTree().send(true);
+            Log.d(SCREEN_SHOT_TAG, "send start screenshot");
+            // 通知开启截屏
+            ChannelFactory.getStartScreenShot().send(true);
+            // 通知无障碍收集控件树
+            Log.d(DUMP_VIEW_TREE_TAG, "send start dumpViewTree");
+            ChannelFactory.getStartDumpViewTree().send(true);
 
 
-        Thread thread1 = new Thread(() -> {
-            try {
-                ClientSocket c = new ClientSocket("10.161.186.123", 9000);
-                c.send("开始收集",countDownLatch);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        thread1.start();
+            Thread thread1 = new Thread(() -> {
+                try {
+                    ClientSocket c = new ClientSocket("10.161.186.123", 9000);
+                    c.send("开始收集",countDownLatch);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            thread1.start();
+        }
+
 
     }
 

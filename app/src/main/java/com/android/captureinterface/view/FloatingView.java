@@ -141,9 +141,6 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
     @Override
     public void onClick(View view) {
 
-
-
-
         switch (view.getId()){
             case R.id.iv_first:
                 currentClickUtil.setInterfaceNum(1);

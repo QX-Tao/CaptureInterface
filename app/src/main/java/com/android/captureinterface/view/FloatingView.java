@@ -54,6 +54,8 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
     // 是否移动
     private boolean isMove;
 
+    private boolean isCreate = false;
+
     private MediaProjectionManager mediaProjectionManager;
 
     private ImageView iv_first;
@@ -144,12 +146,7 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
         switch (view.getId()){
             case R.id.iv_first:
                 currentClickUtil.setInterfaceNum(1);
-                File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
-                String clickFilePath = filePath + File.separator + context.getResources().getString(R.string.app_name);
-                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-                String dateStr = dateformat.format(System.currentTimeMillis());
-                newDirectory(clickFilePath, dateStr);
-                currentClickUtil.setClickFilePath(clickFilePath + "/" + dateStr);
+                isCreate = true;
                 break;
             case R.id.iv_second:
                 int tgNum = currentClickUtil.getInterfaceNum() + 1;
@@ -157,7 +154,7 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
                 break;
         }
 
-        if(currentClickUtil.getClickFilePath() != null){
+        if(isCreate){
             CountDownLatch countDownLatch = new CountDownLatch(3);
             // 隐藏按钮
             floatingView.setVisibility(View.INVISIBLE);
@@ -196,7 +193,7 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
 
             Thread thread1 = new Thread(() -> {
                 try {
-                    ClientSocket c = new ClientSocket("10.161.186.123", 9000);
+                    ClientSocket c = new ClientSocket("10.151.1.249", 9000);
                     c.send("开始收集",countDownLatch);
                 } catch (Exception e) {
                     e.printStackTrace();

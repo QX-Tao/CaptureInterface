@@ -1,5 +1,9 @@
 package com.android.captureinterface.socket;
 
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
+import static android.os.Environment.getExternalStoragePublicDirectory;
+
+import com.android.captureinterface.R;
 import com.android.captureinterface.utils.currentClickUtil;
 
 import java.io.BufferedReader;
@@ -9,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.CountDownLatch;
 
 // 客户端
@@ -16,8 +21,6 @@ public class ClientSocket {
     BufferedReader in = null;
     PrintWriter out = null;
 
-    //private static final int PORT = 9000;
-    // private static final String HOSTNAME = "127.0.0.1";
     private Socket serverSocket;
 
     public ClientSocket(String HOSTNAME, int PORT){
@@ -40,6 +43,16 @@ public class ClientSocket {
             out.println(Msg);
             // 从服务端接收消息并打印
             in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+            String packageName = in.readLine();
+            currentClickUtil.setClickPackageName(packageName);
+            File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+            String clickFilePath = filePath + File.separator + "界面信息收集";
+            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+            String nowStr = packageName + " " + dateformat.format(System.currentTimeMillis());
+            if(currentClickUtil.getInterfaceNum() == 1) {
+                newDirectory(clickFilePath, nowStr);
+                currentClickUtil.setClickFilePath(clickFilePath + "/"  + nowStr);
+            }
             String serverMsg = in.readLine();
 
             String fileName = "SDK" + "_" + "TreeView(" + currentClickUtil.getInterfaceNum() +").json";
@@ -66,6 +79,19 @@ public class ClientSocket {
         }
     }
 
-    // TODO: 阻塞等待SDK发来的信息
+
+    /**
+     * 创建文件夹
+     */
+    public void newDirectory(String _path, String dirName) {
+        File file = new File(_path + "/" + dirName);
+        try {
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

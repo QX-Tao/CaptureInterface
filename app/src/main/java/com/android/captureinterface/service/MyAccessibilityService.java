@@ -124,14 +124,16 @@ public void onAccessibilityEvent(AccessibilityEvent event) {
      * @throws IOException
      */
     public void JsonToFIle(JSONObject jsonObject) throws IOException {
-        String json = jsonObject.toString();
-        String fileName = "无障碍" + "_" + "TreeView(" + currentClickUtil.getInterfaceNum() + ").json";
-        String strFilePath = currentClickUtil.getClickFilePath() + File.separator + fileName;
-        File saveFile = new File(strFilePath);
-        RandomAccessFile raf = new RandomAccessFile(saveFile, "rwd");
-        raf.seek(saveFile.length());
-        raf.write(json.getBytes());
-        raf.close();
+        if(currentClickUtil.getClickFilePath() != null) {
+            String json = jsonObject.toString();
+            String fileName = "无障碍" + "_" + "TreeView(" + currentClickUtil.getInterfaceNum() + ").json";
+            String strFilePath = currentClickUtil.getClickFilePath() + File.separator + fileName;
+            File saveFile = new File(strFilePath);
+            RandomAccessFile raf = new RandomAccessFile(saveFile, "rwd");
+            raf.seek(saveFile.length());
+            raf.write(json.getBytes());
+            raf.close();
+        }
     }
 
     /**

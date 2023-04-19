@@ -193,7 +193,7 @@ public class FloatingView implements View.OnTouchListener, View.OnClickListener 
 
             Thread thread1 = new Thread(() -> {
                 try {
-                    ClientSocket c = new ClientSocket("10.151.1.249", 9000);
+                    ClientSocket c = new ClientSocket("10.161.98.81", 9000);
                     c.send("开始收集",countDownLatch);
                 } catch (Exception e) {
                     e.printStackTrace();

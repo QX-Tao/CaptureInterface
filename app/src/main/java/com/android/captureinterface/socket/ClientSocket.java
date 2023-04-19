@@ -46,12 +46,12 @@ public class ClientSocket {
             String packageName = in.readLine();
             currentClickUtil.setClickPackageName(packageName);
             File filePath = getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
-            String clickFilePath = filePath + File.separator + "界面信息收集";
+            String clickFilePath = filePath + File.separator + "界面信息收集" + File.separator + packageName;
             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
-            String nowStr = packageName + " " + dateformat.format(System.currentTimeMillis());
+            String dateStr = dateformat.format(System.currentTimeMillis());
             if(currentClickUtil.getInterfaceNum() == 1) {
-                newDirectory(clickFilePath, nowStr);
-                currentClickUtil.setClickFilePath(clickFilePath + "/"  + nowStr);
+                newDirectory(clickFilePath, dateStr);
+                currentClickUtil.setClickFilePath(clickFilePath + "/"  + dateStr);
             }
             String serverMsg = in.readLine();
 
